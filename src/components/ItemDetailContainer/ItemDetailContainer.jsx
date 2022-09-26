@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import ItemDetail from '../ItemDetail';
 import { useParams } from 'react-router-dom';
-import { films } from '../Archivo/Archivo';
+
+import { getFirestore , doc, getDocs } from'firebase/firestore';
+
 
 
 
@@ -11,13 +13,12 @@ export const ItemDetailContainer = () => {
   const {detalleId} = useParams();
    
   useEffect(() => {
-    const getData = new Promise(resolve => {
-        setTimeout(() => {
-          resolve(films);
-        }, 3000);
-     });
-     getData.then(res => setData(res.find(film => film.id === parseInt(detalleId))));
-    },[detalleId])
+    
+     const querydb = getFirestore();
+     const queryDoc = doc(querydb, 'Productos', 'detalleId');
+     getDocs(queryDoc)
+      .then(res => setData({ id:res.id,...res.data() }))
+    }, [detalleId])
 
   
  

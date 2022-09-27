@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import ItemDetail from '../ItemDetail';
 import { useParams } from 'react-router-dom';
-
-import { getFirestore , doc, getDocs } from'firebase/firestore';
+import { getFirestore , doc, getDoc } from'firebase/firestore';
+import {db} from "../../../src/firebase/config";
 
 
 
@@ -15,8 +15,8 @@ export const ItemDetailContainer = () => {
   useEffect(() => {
     
      const querydb = getFirestore();
-     const queryDoc = doc(querydb, 'Productos', 'detalleId');
-     getDocs(queryDoc)
+     const queryDoc = doc(querydb, db, 'Productos', 'detalleId');
+     getDoc(queryDoc)
       .then(res => setData({ id:res.id,...res.data() }))
     }, [detalleId])
 

@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import ItemDetail from '../ItemDetail';
 import { useParams } from 'react-router-dom';
-import { getFirestore , doc, getDoc } from'firebase/firestore';
-import {db} from "../../../src/firebase/config";
+import { getFirestore , getDocs, collection, query, where } from'firebase/firestore';
+
 
 
 
@@ -10,15 +10,22 @@ import {db} from "../../../src/firebase/config";
 
 export const ItemDetailContainer = () => {
   const [data, setData] = useState({});
-  const {detalleId} = useParams();
+  const {categoriaId} = useParams();
    
   useEffect(() => {
     
      const querydb = getFirestore();
-     const queryDoc = doc(querydb, db, 'Productos', 'detalleId');
-     getDoc(queryDoc)
-      .then(res => setData({ id:res.id,...res.data() }))
-    }, [detalleId])
+     const queryCollection = collection(querydb,  'Productos');
+     if (categoriaId) {
+      const queryFilter = query(queryCollection, where('category', '==', categoriaId))
+      getDocs(queryFilter)
+       .then(res => setData(res.docs.map(Productos => ({ id: Productos.id, ...Productos.data()}))));
+        }else {
+          getDocs(queryCollection)
+          .then(res => setData(res.docs.map(Productos => ({ id: Productos.id, ...Productos.data()}))));
+        }
+     }, [categoriaId])
+
 
   
  
